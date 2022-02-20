@@ -1,3 +1,4 @@
+import random
 import requests
 import geopy.distance
 from config import (API_KEY, TEXT_SEARCH_API)
@@ -12,9 +13,9 @@ def get_distance(res, lat, lon):
     for i in res:
         coords_1 = (lat, lon)
         coords_2 = (i['geometry']['location']['lat'], i['geometry']['location']['lng'])
-        i['distance'] = geopy.distance.geodesic(coords_1, coords_2).mi
-        i['number_of_available_beds'] = 20
-        i['occupancy_rate'] = '38%'
+        i['distance'] = round(geopy.distance.geodesic(coords_1, coords_2).mi,2)
+        i['number_of_available_beds'] = random.randint(230, 1128)
+        i['occupancy_rate'] = random.randint(23, 78)
     return res
 
 def get_hospital_recommendations(data):

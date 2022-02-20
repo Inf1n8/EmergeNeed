@@ -1,5 +1,6 @@
 import os
 from flask import Flask, request
+from flask_cors import CORS
 from flask_restful import Resource, Api
 import google.cloud.dialogflow_v2 as dialogflow
 
@@ -17,14 +18,25 @@ from intersystem_handler import (
 
 os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = './hospitalhoppers-6c9e1bacd23a.json'
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', static_url_path='/static')
+# CORS(app, resources={r"*": {"origins": "*"}})
 api = Api(app)
 
 session_client = dialogflow.SessionsClient()
 session = session_client.session_path(DIALOGFLOW_PROJECT_ID, SESSION_ID)
 
+class Test(Resource):
+    def get(self):
+        return {'msg': 'hello world'}
+
+class Index(Resource):
+    def get(self):
+        return app.send_static_file('index.html')
+
 class IntentRecognition(Resource):
     def post(self):
+        print(request.args.to_dict())
+        print(request.get_json())
         body = request.get_json()
         if body.get('text') is None:
             {'message': 'BAD_REQUEST', 'error_message': 'Missing text parameter in the body'}, 400
@@ -34,6 +46,7 @@ class IntentRecognition(Resource):
 class HospitalList(Resource):
     def post(self):
         payload = request.get_json()
+        print(payload)
         res = get_hospital_recommendations(payload)
         return res, 200
 
@@ -84,6 +97,8 @@ api.add_resource(Questionnaire, '/questionnaire')
 api.add_resource(Goal, '/goal')
 api.add_resource(Immunization, '/immunization')
 api.add_resource(Appointment, '/appointment')
+api.add_resource(Test, '/hello')
+api.add_resource(Index, '/')
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,92 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <style>
+            *{
+                margin: 0;
+                padding: 0
+            }
+            #container{
+                width: 100vw;
+            }
+            .shadow-box-example {
+                height: 600px;
+                width: 100%;
+                background-color: #64b5f6;
+            }
+        </style>
+    </head>
+    <body>
+        <h1 style="text-align:center; margin: 10px 0 20px 0">Hospital Recommendation List</h1>
+        <div id="container" class='col-md-6 offset-md-3'>
+            
+        </div>
+        <script src="static/assets/js/jquery.min.js"></script>
+        <!-- <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script> -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+        <script>
+
+            const hospital_template = (logo, name, distance, available_beds, occupancy_rate, rating, address) => 
+            `<div class="card mb-3">
+                <div class="row g-0">
+                <div class="col-md-4" style="position:relative">
+                    <img style="height:100px;width:100px;position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)" src=${logo} class="img-fluid rounded-start" alt="...">
+                </div>
+                <div class="col-md-8">
+                    <div class="card-body">
+                    <h5 class="card-title">${name}</h5>
+                    <p class="card-text">${address}</p>
+                    <p class="card-text"><small class="text-muted">Distance: ${distance} mi</small></p>
+                    <p class="card-text"><small class="text-muted">Available beds: ${available_beds}</small></p>
+                    <p class="card-text"><small class="text-muted">Occupancy rate: ${occupancy_rate}%</small></p>
+                    <p class="card-text">Rating: ${rating}</p>
+                    </div>
+                </div>
+                </div>
+            </div>`;
+
+            $(document).ready(function () {
+
+
+                function render_hospitals(data){
+                    let t= ``;
+                    for(let i=0;i<data.length; i++){
+                        t += hospital_template(data[i]['icon'], data[i]['name'], data[i]['distance'], data[i]['number_of_available_beds'],
+                        data[i]['occupancy_rate'], data[i]['rating'], data[i]['formatted_address'] );
+                    }
+                    $("#container").html(t);
+                }
+
+
+                let data = []
+                console.log('loaded');
+
+                var settings = {
+                        "url": "/hospitals",
+                        "method": "POST",
+                        "timeout": 0,
+                        "headers": {
+                            "Content-Type": "application/json"
+                        },
+                        "data": JSON.stringify({
+                            "lat": 34.0280646,
+                            "lon": -118.281756,
+                            "symptoms": [
+                            "ortho"
+                            ]
+                        }),
+                        };
+
+                $.ajax(settings).done(function (response) {
+                    console.log(response);
+                                            data = response;
+                                            render_hospitals(data)
+                });
+                })
+        </script>
+    </body>
+</html>
