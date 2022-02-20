@@ -6,6 +6,8 @@ click==8.0.4
 colorama==0.4.4
 Flask==2.0.3
 Flask-RESTful==0.3.9
+geographiclib==1.52
+geopy==2.2.0
 google-api-core==2.5.0
 google-auth==1.35.0
 google-cloud-dialogflow==2.11.0
