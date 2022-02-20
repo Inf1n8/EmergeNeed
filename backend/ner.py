@@ -1,7 +1,6 @@
 import google.cloud.dialogflow_v2 as dialogflow
 from google.api_core.exceptions import InvalidArgument
 from config import (DIALOGFLOW_LANGUAGE_CODE)
-import google.protobuf  as pf
 
 
 def get_entities(txt, session_client, session):
